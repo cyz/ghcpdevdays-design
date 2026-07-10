@@ -28,7 +28,7 @@ Want to test the app quickly on your machine? Follow the steps below.
 3. 🌐 Open in your browser:
 
 	```text
-	http://localhost:5173/banner-generator/
+	http://localhost:5173/ghcpdevdays-design/
 	```
 
 ## 🎯 About the Project
