@@ -753,6 +753,10 @@ button.danger {
 }
 
 .switch {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
   width: 42px;
   height: 24px;
   border-radius: 999px;
@@ -766,6 +770,7 @@ button.danger {
   background: var(--app-switch-thumb);
   border-radius: 50%;
   display: block;
+  flex: none;
   transition: transform 150ms ease;
 }
 
