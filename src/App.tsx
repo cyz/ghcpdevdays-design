@@ -291,7 +291,7 @@ function App() {
           <span className="topbar-icon" aria-hidden="true">
             <CopilotIcon size={20} />
           </span>
-          <h1>GitHub Copilot Dev Days</h1>
+          <h1>Dev Days</h1>
         </div>
 
         <div className="topbar-actions">

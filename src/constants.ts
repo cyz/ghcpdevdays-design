@@ -40,7 +40,7 @@ export const defaultColors: BannerState['colors'] = {
 
 export const brandTitleLine1 = 'GitHub Copilot'
 export const brandTitleLine2 = 'Dev Days'
-export const fixedEventTitle = 'GitHub Copilot Dev Days'
+export const fixedEventTitle = 'Dev Days'
 // Fixed green label shared by the Luma cover and the Speaker Banner.
 export const fixedGreenLabel = 'DEV DAYS 2026'
 export const lumaCityColor = '#00d12f'
