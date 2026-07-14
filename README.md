@@ -1,4 +1,4 @@
-# 🎨 GitHub Copilot Dev Days: Social Image Creator
+# 🎨 Dev Days: Social Image Creator
 
 **Create event and social media banners with live preview and one-click export.**
 
