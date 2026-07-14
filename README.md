@@ -2,8 +2,6 @@
 
 **Create event and social media banners with live preview and one-click export.**
 
-Built for **GitHub Copilot Dev Days**.
-
 This repository contains a browser-based app built to generate banners quickly with a guided workflow.
 It is ideal for event teams, communities, and social media operations that need fast, consistent visuals.
 
