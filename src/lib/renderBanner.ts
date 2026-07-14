@@ -181,7 +181,7 @@ export async function renderBanner(
         (useBannerPositioning ? speakerBannerTitleDownOffset : 0) +
         (isSocialPromo ? 25 : 0)
       // Speaker Banner / Social Promo: fixed distance (px) from the green label down to the Date/time.
-      const speakerBannerDateFromLabel = 50
+      const speakerBannerDateFromLabel = 20
       const dateY = useBannerPositioning
         ? Math.round(cityY + speakerBannerDateFromLabel)
         : eventTitleY + eventLineStep + (eventLineStep + 2)
@@ -189,8 +189,10 @@ export async function renderBanner(
       ctx.fillStyle = lumaCityColor
       ctx.font = `500 ${citySize}px "Mona Sans Mono", monospace`
       ctx.letterSpacing = '3px'
+      // Green fixed label vertical nudge (px). Negative = move the label UP without moving date/title.
+      const greenLabelRaise = -30
       cityLines.forEach((line, index) => {
-        ctx.fillText(line, textX, cityY + index * cityLineStep)
+        ctx.fillText(line, textX, cityY + greenLabelRaise + index * cityLineStep)
       })
       ctx.letterSpacing = '0px'
 

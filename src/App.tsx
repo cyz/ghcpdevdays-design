@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import {
   ChevronDownIcon,
   CopilotIcon,
@@ -34,10 +34,6 @@ import { uid } from './lib/format'
 import { buildDefaultState, readBannerHistory, writeBannerHistory } from './lib/history'
 import { fileToDataUrl, getBackgroundImage, loadImage } from './lib/image'
 import { renderBanner } from './lib/renderBanner'
-
-// Debounce for the live preview redraw so rapid input changes don't trigger a
-// full canvas re-render on every keystroke.
-const PREVIEW_DEBOUNCE_MS = 120
 
 function App() {
   const [backgroundFailed, setBackgroundFailed] = useState(false)
@@ -91,25 +87,29 @@ function App() {
   useEffect(() => {
     let cancelled = false
 
-    const handle = window.setTimeout(() => {
-      const draw = async () => {
-        if (!canvasRef.current) return
-        if (showMultiSpeakerPreviewGrid) {
-          const ctx = canvasRef.current.getContext('2d')
-          if (ctx) ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
-          return
-        }
-        await renderBanner(canvasRef.current, state, format, previewBackgroundFailed, 1)
+    const draw = async () => {
+      if (cancelled || !canvasRef.current) return
+      if (showMultiSpeakerPreviewGrid) {
+        const ctx = canvasRef.current.getContext('2d')
+        if (ctx) ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
+        return
       }
-
-      draw().catch(() => {
+      try {
+        await renderBanner(canvasRef.current, state, format, previewBackgroundFailed, 1)
+      } catch {
         if (!cancelled) setError('Failed to render preview.')
-      })
-    }, PREVIEW_DEBOUNCE_MS)
+      }
+    }
+
+    // Coalesce rapid state changes into a single redraw on the next animation
+    // frame. This keeps typing smooth while making variation switches feel instant.
+    const frame = window.requestAnimationFrame(() => {
+      void draw()
+    })
 
     return () => {
       cancelled = true
-      window.clearTimeout(handle)
+      window.cancelAnimationFrame(frame)
     }
   }, [state, format, previewBackgroundFailed, showMultiSpeakerPreviewGrid, fontsReady])
 
@@ -160,6 +160,15 @@ function App() {
       .then(() => setBackgroundFailed(false))
       .catch(() => setBackgroundFailed(true))
   }, [selectedBackgroundImage])
+
+  // Warm the image cache for every format's background on mount so the first
+  // switch to a variation doesn't wait on a network/decode round-trip.
+  useEffect(() => {
+    formatOptions.forEach((option) => {
+      const src = getBackgroundImage(option.id)
+      if (src) loadImage(src).catch(() => undefined)
+    })
+  }, [])
 
   const updateEvent = (patch: Partial<EventDetails>) =>
     setState((prev) => ({ ...prev, event: { ...prev.event, ...patch } }))
@@ -651,7 +660,7 @@ function App() {
             {!showMultiSpeakerPreviewGrid && (
               <div
                 className="canvas-wrap"
-                style={{ aspectRatio: `${format.width} / ${format.height}`, transform: `scale(${zoom * previewBaseScale})` }}
+                style={{ aspectRatio: `${format.width} / ${format.height}`, '--preview-zoom': zoom * previewBaseScale } as CSSProperties}
               >
                 <canvas ref={canvasRef} aria-label="Banner preview" />
               </div>
