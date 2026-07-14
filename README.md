@@ -26,7 +26,7 @@ Want to test the app quickly on your machine? Follow the steps below.
 3. 🌐 Open in your browser:
 
 	```text
-	http://localhost:5173/ghcpdevdays-design/
+	http://localhost:5173/devdays-design/
 	```
 
 ## 🎯 About the Project
